@@ -70,6 +70,6 @@ app.delete('/api/users/:userId', verify, (req, res) => {
 	}
 });
 
-app.listen(3001, () => {
-	console.log('SERVER RUNNING... PORT = 3001');
+app.listen(5000, () => {
+	console.log('SERVER RUNNING... PORT = 5000');
 });
