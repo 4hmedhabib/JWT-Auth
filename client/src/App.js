@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import jwt_decode from 'jwt-decode';
 
+axios.defaults.baseURL = 'http://localhost:5000';
+
 function App() {
 	const [ user, setUser ] = useState(null);
 	const [ username, setUsername ] = useState('');
@@ -13,15 +15,7 @@ function App() {
 	const refreshToken = async () => {
 		try {
 			const res = await axios.post('/refresh', { token: user.refreshToken });
-			setUser({
-				...user,
-				accessToken: res.data.accessToken,
-				refreshToken: res.data.refreshToken
-			});
-			return res.data;
-		} catch (err) {
-			console.log(err);
-		}
+		} catch (err) {}
 	};
 
 	const axiosJWT = axios.create();
@@ -44,7 +38,7 @@ function App() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const res = await axios.post('/login', { username, password });
+			const res = await axios.post('/api/login', { username, password });
 			setUser(res.data);
 		} catch (err) {
 			console.log(err);
@@ -55,8 +49,10 @@ function App() {
 		setSuccess(false);
 		setError(false);
 		try {
-			await axiosJWT.delete('/users/' + id, {
-				headers: { authorization: 'Bearer ' + user.accessToken }
+			await axios.delete('/api/users/' + id, {
+				headers: {
+					authorization: 'Bearer ' + user.accessToken
+				}
 			});
 			setSuccess(true);
 		} catch (err) {

@@ -2,9 +2,23 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const whitelist = [ 'http://localhost:3002' ];
+const corsOptions = {
+	origin: function(origin, callback) {
+		if (whitelist.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			throw new Error({ message: 'Not allowd' });
+		}
+	}
+};
+
+app.use(cors(corsOptions));
 
 const users = [
 	{
@@ -55,6 +69,7 @@ app.post('/api/refresh', (req, res) => {
 });
 
 app.post('/api/login', (req, res) => {
+	console.log('Running............');
 	const { username, password } = req.body;
 
 	const user = users.find((u) => {
